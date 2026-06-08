@@ -2,299 +2,530 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>汉语五词造句打卡 | 白/干/瞎/空/虚</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>造句打卡 | Instagram 风格</title>
+    <!-- 引入图标 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-firestore.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Microsoft Yahei", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         body {
-            background-color: #f5f7fa;
-            padding: 15px;
-            max-width: 750px;
+            background-color: #ffffff;
+            color: #000;
+            max-width: 420px;
             margin: 0 auto;
+            border: 1px solid #dbdbdb;
         }
-        /* 头部标题 */
-        .header {
-            text-align: center;
-            padding: 20px 10px;
-            background: #2E86AB;
-            color: #fff;
-            border-radius: 12px;
-            margin-bottom: 20px;
+        /* ========== 顶部导航栏（Ins 原版导航） ========== */
+        .ins-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid #dbdbdb;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 99;
         }
-        .header h1 {
+        .ins-logo {
+            font-family: 'Segoe Script', cursive;
+            font-size: 24px;
+            font-weight: 500;
+        }
+        .ins-nav-icon {
             font-size: 22px;
-            margin-bottom: 8px;
-        }
-        .header p {
-            font-size: 14;
-            opacity: 0.9;
-        }
-        /* 规则板块 */
-        .rule-box {
-            background: #fff;
-            padding: 16px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px #eee;
-        }
-        .rule-title {
-            font-size: 17px;
-            font-weight: bold;
-            color: #2E86AB;
-            margin-bottom: 10px;
-        }
-        .rule-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #333;
-        }
-        .en-text {
-            font-size: 13px;
-            color: #666;
-            margin-top: 6px;
-        }
-        /* 提交表单 */
-        .form-box {
-            background: #fff;
-            padding: 18px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px #eee;
-        }
-        .form-item {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            font-size: 15px;
-            color: #333;
-            margin-bottom: 6px;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 15px;
-            outline: none;
-        }
-        textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-        input:focus, textarea:focus {
-            border-color: #2E86AB;
-        }
-        .upload-box {
-            padding: 10px 0;
-        }
-        .preview-img {
-            max-width: 100%;
-            max-height: 200px;
-            margin-top: 10px;
-            border-radius: 6px;
-            display: none;
-        }
-        .submit-btn {
-            width: 100%;
-            padding: 13px;
-            background: #2E86AB;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            margin-left: 18px;
             cursor: pointer;
         }
-        .submit-btn:active {
-            background: #246d8c;
-        }
-        /* 作品展示区 */
-        .work-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin: 20px 0 10px;
-            padding-left: 5px;
-        }
-        .work-list {
+        .nav-right {
             display: flex;
-            flex-direction: column;
-            gap: 16px;
+            align-items: center;
         }
-        .work-card {
+
+        /* ========== 发布弹窗（点击加号弹出发布界面） ========== */
+        .publish-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .publish-box {
+            width: 92%;
+            max-width: 380px;
             background: #fff;
-            padding: 16px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px #eee;
+            border-radius: 12px;
+            overflow: hidden;
         }
-        .work-name {
+        .publish-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid #dbdbdb;
+        }
+        .publish-cancel {
+            color: #0095f6;
             font-size: 15px;
-            color: #2E86AB;
-            font-weight: bold;
-            margin-bottom: 8px;
+            cursor: pointer;
         }
-        .work-sentence {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #333;
-            margin-bottom: 10px;
+        .publish-title {
+            font-weight: 600;
         }
-        .work-img {
-            max-width: 100%;
+        .publish-post {
+            color: #0095f6;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .publish-content {
+            padding: 16px;
+        }
+        .publish-avatar-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .pub-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .pub-name-input {
+            border: none;
+            outline: none;
+            font-size: 15px;
+            width: 100px;
+        }
+        .pub-textarea {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            min-height: 80px;
+            resize: none;
+            margin-bottom: 12px;
+        }
+        .pub-img-preview {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: none;
+            margin-bottom: 12px;
+        }
+        .pub-file {
+            display: none;
+        }
+        .file-label {
+            display: inline-block;
+            color: #0095f6;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .check-tip {
+            margin: 10px 0;
+            padding: 8px 10px;
             border-radius: 6px;
+            font-size: 13px;
         }
-        .time {
+        .error {
+            background: #fff1f2;
+            color: #e02424;
+        }
+        .correct {
+            background: #f1fff6;
+            color: #22a75d;
+        }
+
+        /* ========== 动态流卡片（Ins 原版帖子） ========== */
+        .feed-list {
+            padding-bottom: 60px;
+        }
+        .post-card {
+            border-bottom: 1px solid #dbdbdb;
+        }
+        /* 帖子头部：头像+昵称 */
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .post-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .post-username {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .more-icon {
+            font-size: 16px;
+        }
+        /* 帖子图片 */
+        .post-img {
+            width: 100%;
+            display: block;
+        }
+        /* 帖子功能按钮：点赞、评论、转发 */
+        .post-action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+        }
+        .action-left i {
+            font-size: 24px;
+            margin-right: 16px;
+            cursor: pointer;
+        }
+        .action-right i {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        /* 帖子文案 */
+        .post-desc {
+            padding: 0 16px 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .post-time {
+            padding: 0 16px 12px;
             font-size: 12px;
-            color: #999;
-            margin-top: 8px;
-            text-align: right;
+            color: #8e8e8e;
         }
-        /* 提示语 */
+        /* 评论区 */
+        .comment-wrap {
+            border-top: 1px solid #f0f0f0;
+            padding: 10px 16px;
+        }
+        .comment-item {
+            font-size: 14px;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        .comment-item b {
+            margin-right: 4px;
+        }
+        .comment-input-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .comment-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            padding: 6px 0;
+        }
+        .comment-send {
+            color: #0095f6;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
         .empty-tip {
             text-align: center;
-            color: #999;
-            padding: 30px 0;
-            font-size: 14px;
+            padding: 60px 20px;
+            color: #8e8e8e;
+            font-size: 15px;
+        }
+        /* 底部导航栏（Ins 原版底栏） */
+        .ins-footer {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #dbdbdb;
+            background: #fff;
+        }
+        .footer-icon {
+            font-size: 24px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <!-- 头部 -->
-    <div class="header">
-        <h1>五词造句打卡练习</h1>
-        <p>练习：白 / 干 / 瞎 / 空 / 虚 | Sentence Practice</p>
-    </div>
-
-    <!-- 活动规则 -->
-    <div class="rule-box">
-        <div class="rule-title">📖 活动规则 / Rules</div>
-        <div class="rule-text">
-            1. 结合个人生活，使用 <b>白、干、瞎、空、虚</b> 造句；<br>
-            2. 填写姓名、句子，并上传一张照片（生活/学习/风景均可）；<br>
-            3. 所有作品公开可见，互相学习哦！
+    <!-- 顶部导航栏 -->
+    <header class="ins-header">
+        <div class="ins-logo">Instagram</div>
+        <div class="nav-right">
+            <i class="fa-regular fa-heart ins-nav-icon"></i>
+            <i class="fa-regular fa-paper-plane ins-nav-icon"></i>
         </div>
-        <div class="en-text">
-            1. Make sentences with 白/干/瞎/空/虚 based on your life.<br>
-            2. Write your name & sentence, upload one picture.<br>
-            3. All works are public. Learn from each other!
-        </div>
-        <div style="margin-top:12px;font-size:14px;color:#444;">
-            <b>词义速记：</b>白=结果落空 干=无奈僵持 瞎=盲目无据 空=有名无实 虚=虚假不实
-        </div>
-    </div>
+    </header>
 
-    <!-- 提交表单 -->
-    <div class="form-box">
-        <div class="form-item">
-            <label>姓名 / Name</label>
-            <input type="text" id="username" placeholder="请输入你的名字 / Enter your name">
-        </div>
-        <div class="form-item">
-            <label>造句 / Sentence</label>
-            <textarea id="sentence" placeholder="用 白/干/瞎/空/虚 写一句话 / Write a sentence"></textarea>
-        </div>
-        <div class="form-item upload-box">
-            <label>上传图片 / Upload Picture</label>
-            <input type="file" id="imgFile" accept="image/*">
-            <img id="imgPreview" class="preview-img">
-        </div>
-        <button class="submit-btn" onclick="submitWork()">提交作品 / Submit</button>
-    </div>
-
-    <!-- 作品展示区 -->
-    <div class="work-title">📸 大家的作品 / All Works</div>
-    <div class="work-list" id="workList">
-        <div class="empty-tip">暂无作品，快来发布第一条吧~<br>No works yet, be the first!</div>
-    </div>
-
-    <script>
-        // 图片预览
-        const imgFile = document.getElementById('imgFile');
-        const imgPreview = document.getElementById('imgPreview');
-        imgFile.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    imgPreview.src = ev.target.result;
-                    imgPreview.style.display = 'block';
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // 本地存储 + 提交功能（数据保存在浏览器本地，刷新不丢失）
-        let workData = JSON.parse(localStorage.getItem('workList')) || [];
-        const workList = document.getElementById('workList');
-
-        // 渲染所有作品
-        function renderWorks() {
-            if(workData.length === 0) {
-                workList.innerHTML = `<div class="empty-tip">暂无作品，快来发布第一条吧~<br>No works yet, be the first!</div>`;
-                return;
-            }
-            let html = '';
-            workData.forEach(item => {
-                html += `
-                <div class="work-card">
-                    <div class="work-name">${item.name}</div>
-                    <div class="work-sentence">${item.content}</div>
-                    ${item.img ? `<img class="work-img" src="${item.img}">` : ''}
-                    <div class="time">${item.time}</div>
+    <!-- 发布帖子弹窗（点击底部加号弹出） -->
+    <div class="publish-mask" id="publishMask">
+        <div class="publish-box">
+            <div class="publish-top">
+                <span class="publish-cancel" onclick="closePublish()">取消</span>
+                <span class="publish-title">新建帖子</span>
+                <span class="publish-post" onclick="submitWork()">分享</span>
+            </div>
+            <div class="publish-content">
+                <div class="publish-avatar-name">
+                    <div class="pub-avatar">我</div>
+                    <input type="text" class="pub-name-input" id="userName" placeholder="你的昵称">
                 </div>
-                `
-            });
-            workList.innerHTML = html;
+                <textarea class="pub-textarea" id="sentText" placeholder="添加文案（请使用：白、干、瞎、空、虚 造句）"></textarea>
+                <img class="pub-img-preview" id="imgPreview">
+                <input type="file" class="pub-file" id="imgFile" accept="image/*">
+                <label for="imgFile" class="file-label"><i class="fa-solid fa-image"></i> 选择照片</label>
+                <div id="checkResult" class="check-tip"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 动态流区域 -->
+    <main class="feed-list" id="feedList">
+        <div class="empty-tip">暂无帖子，点击底部加号发布第一条造句动态 📸</div>
+    </main>
+
+    <!-- 底部导航栏（Ins 原版） -->
+    <footer class="ins-footer">
+        <i class="fa-solid fa-house footer-icon"></i>
+        <i class="fa-solid fa-magnifying-glass footer-icon"></i>
+        <i class="fa-solid fa-plus-square footer-icon" onclick="openPublish()"></i>
+        <i class="fa-regular fa-compass footer-icon"></i>
+        <i class="fa-regular fa-user footer-icon"></i>
+    </footer>
+
+<script>
+// 云端数据库配置
+const firebaseConfig = {
+  apiKey: "AIzaSyB0kF8xQ9Z8X7aQ0Z8X7aQ0Z8X7aQ0Z8X7",
+  authDomain: "chinese-class-practice.firebaseapp.com",
+  projectId: "chinese-class-practice",
+  storageBucket: "chinese-class-practice.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 打开/关闭发布弹窗
+function openPublish(){
+    document.getElementById('publishMask').style.display = 'flex';
+}
+function closePublish(){
+    document.getElementById('publishMask').style.display = 'none';
+    // 清空内容
+    document.getElementById('userName').value = '';
+    document.getElementById('sentText').value = '';
+    document.getElementById('imgPreview').style.display = 'none';
+    document.getElementById('imgFile').value = '';
+    document.getElementById('checkResult').innerHTML = '';
+}
+
+// 图片预览
+const imgFile = document.getElementById('imgFile');
+const imgPreview = document.getElementById('imgPreview');
+imgFile.addEventListener('change', function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+        imgPreview.src = ev.target.result;
+        imgPreview.style.display = 'block';
+    }
+    reader.readAsDataURL(file);
+});
+
+// ========== 自动纠错规则 ==========
+function checkSentence(text){
+    const resDom = document.getElementById('checkResult');
+    const words = ['白','干','瞎','空','虚'];
+    let hasWord = false;
+    let tips = [];
+
+    words.forEach(w => {
+        if(text.includes(w)) hasWord = true;
+    });
+    if(!hasWord){
+        resDom.className = "check-tip error";
+        resDom.innerHTML = "⚠️ 必须使用：白、干、瞎、空、虚 任意一词造句";
+        return false;
+    }
+
+    if(text.includes("白") && /白猜测|白乱想/.test(text)){
+        tips.push("❌ 猜测请用「瞎」，「白」表示徒劳无果");
+    }
+    if(text.includes("瞎") && /瞎跑|瞎忙活/.test(text)){
+        tips.push("❌ 白费力气请用「白」，「瞎」表示盲目行事");
+    }
+    if(text.includes("干") && /干成功|干收获/.test(text)){
+        tips.push("❌ 「干」表无奈僵持，不搭配积极结果");
+    }
+    if(text.includes("空") && /空说谎|空骗人/.test(text)){
+        tips.push("❌ 虚假请用「虚」，「空」表有名无实");
+    }
+    if(text.includes("虚") && /虚有外表|虚有本领/.test(text)){
+        tips.push("❌ 有名无实请用「空」，「虚」表虚伪");
+    }
+
+    if(tips.length > 0){
+        resDom.className = "check-tip error";
+        resDom.innerHTML = tips.join("<br>");
+        return false;
+    }else{
+        resDom.className = "check-tip correct";
+        resDom.innerHTML = "✅ 用词正确，可以分享";
+        return true;
+    }
+}
+
+// ========== 发布帖子（提交数据） ==========
+async function submitWork(){
+    const name = document.getElementById('userName').value.trim();
+    const content = document.getElementById('sentText').value.trim();
+    const imgSrc = imgPreview.style.display === 'block' ? imgPreview.src : '';
+
+    if(!name){
+        alert("请填写你的昵称");
+        return;
+    }
+    if(!content){
+        alert("请填写造句文案");
+        return;
+    }
+
+    // 执行纠错
+    const pass = checkSentence(content);
+    if(!pass) return;
+
+    const now = new Date();
+    const timeStr = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`;
+
+    // 存入云端
+    await db.collection('posts').add({
+        name,
+        content,
+        img: imgSrc,
+        time: timeStr,
+        comments: []
+    });
+
+    alert("发布成功！");
+    closePublish();
+}
+
+// ========== 渲染全部动态帖子（Ins 流布局） ==========
+function renderFeed(){
+    db.collection('posts').orderBy('time','desc').onSnapshot(snapshot => {
+        const feed = document.getElementById('feedList');
+        if(snapshot.empty){
+            feed.innerHTML = `<div class="empty-tip">暂无帖子，点击底部加号发布第一条造句动态 📸</div>`;
+            return;
         }
-
-        // 初始化渲染
-        renderWorks();
-
-        // 提交作品
-        function submitWork() {
-            const name = document.getElementById('username').value.trim();
-            const content = document.getElementById('sentence').value.trim();
-            const imgSrc = imgPreview.style.display === 'block' ? imgPreview.src : '';
-
-            // 简单校验
-            if(!name) {
-                alert('请输入姓名 / Please enter your name');
-                return;
+        let html = '';
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const docId = doc.id;
+            // 拼接评论
+            let commentHtml = '';
+            if(data.comments && data.comments.length > 0){
+                data.comments.forEach(c => {
+                    commentHtml += `<div class="comment-item"><b>${c.name}</b>${c.content}</div>`;
+                });
             }
-            if(!content) {
-                alert('请填写造句 / Please write a sentence');
-                return;
-            }
+            // 单条帖子结构（完全复刻Ins）
+            html += `
+            <div class="post-card" data-id="${docId}">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="post-avatar">${data.name.charAt(0)}</div>
+                        <div class="post-username">${data.name}</div>
+                    </div>
+                    <i class="fa-solid fa-ellipsis more-icon"></i>
+                </div>
+                ${data.img ? `<img class="post-img" src="${data.img}">` : ''}
+                <div class="post-action">
+                    <div class="action-left">
+                        <i class="fa-regular fa-heart"></i>
+                        <i class="fa-regular fa-comment"></i>
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </div>
+                    <div class="action-right">
+                        <i class="fa-regular fa-bookmark"></i>
+                    </div>
+                </div>
+                <div class="post-desc">
+                    <b>${data.name}</b> ${data.content}
+                </div>
+                <div class="post-time">${data.time}</div>
+                <div class="comment-wrap">
+                    ${commentHtml}
+                    <div class="comment-input-box">
+                        <input type="text" class="comment-input" placeholder="添加评论..." data-docid="${docId}">
+                        <span class="comment-send" onclick="addComment('${docId}')">发布</span>
+                    </div>
+                </div>
+            </div>
+            `;
+        });
+        feed.innerHTML = html;
+    });
+}
 
-            // 获取当前时间
-            const now = new Date();
-            const time = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`;
+// ========== 发表评论 ==========
+async function addComment(docId){
+    const input = document.querySelector(`.comment-input[data-docid="${docId}"]`);
+    const txt = input.value.trim();
+    if(!txt){
+        alert("请输入评论内容");
+        return;
+    }
+    const docRef = db.collection('posts').doc(docId);
+    await docRef.update({
+        comments: firebase.firestore.FieldValue.arrayUnion({
+            name: "访客",
+            content: txt
+        })
+    });
+    input.value = '';
+}
 
-            // 新增数据
-            const newWork = {
-                name: name,
-                content: content,
-                img: imgSrc,
-                time: time
-            };
-            workData.unshift(newWork);
-            // 保存到本地存储
-            localStorage.setItem('workList', JSON.stringify(workData));
-            // 重新渲染
-            renderWorks();
-            // 清空表单
-            document.getElementById('username').value = '';
-            document.getElementById('sentence').value = '';
-            imgFile.value = '';
-            imgPreview.style.display = 'none';
-            // 提示
-            alert('提交成功！Success!');
-        }
-    </script>
+// 页面初始化
+renderFeed();
+</script>
 </body>
 </html>
