@@ -2,530 +2,793 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>造句打卡 | Instagram 风格</title>
-    <!-- 引入图标 -->
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-firestore.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>HSK课堂 · 一起发朋友圈 | 白干瞎空虚造句大赛</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-        body {
-            background-color: #ffffff;
-            color: #000;
-            max-width: 420px;
-            margin: 0 auto;
-            border: 1px solid #dbdbdb;
-        }
-        /* ========== 顶部导航栏（Ins 原版导航） ========== */
-        .ins-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            border-bottom: 1px solid #dbdbdb;
-            position: sticky;
-            top: 0;
-            background: #fff;
-            z-index: 99;
-        }
-        .ins-logo {
-            font-family: 'Segoe Script', cursive;
-            font-size: 24px;
-            font-weight: 500;
-        }
-        .ins-nav-icon {
-            font-size: 22px;
-            margin-left: 18px;
-            cursor: pointer;
-        }
-        .nav-right {
-            display: flex;
-            align-items: center;
         }
 
-        /* ========== 发布弹窗（点击加号弹出发布界面） ========== */
-        .publish-mask {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
+        body {
+            background: #f0f2f5;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 24px 20px 48px 20px;
+            color: #1e2a3e;
         }
-        .publish-box {
-            width: 92%;
-            max-width: 380px;
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
         }
-        .publish-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            border-bottom: 1px solid #dbdbdb;
+
+        /* 课堂头部 */
+        .class-header {
+            background: linear-gradient(135deg, #1e6f5c, #289672);
+            border-radius: 2rem;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
         }
-        .publish-cancel {
-            color: #0095f6;
-            font-size: 15px;
-            cursor: pointer;
-        }
-        .publish-title {
-            font-weight: 600;
-        }
-        .publish-post {
-            color: #0095f6;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .publish-content {
-            padding: 16px;
-        }
-        .publish-avatar-name {
+
+        .class-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 16px;
-        }
-        .pub-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-        .pub-name-input {
-            border: none;
-            outline: none;
-            font-size: 15px;
-            width: 100px;
-        }
-        .pub-textarea {
-            width: 100%;
-            border: none;
-            outline: none;
-            font-size: 15px;
-            min-height: 80px;
-            resize: none;
-            margin-bottom: 12px;
-        }
-        .pub-img-preview {
-            width: 100%;
-            max-height: 260px;
-            object-fit: cover;
-            border-radius: 8px;
-            display: none;
-            margin-bottom: 12px;
-        }
-        .pub-file {
-            display: none;
-        }
-        .file-label {
-            display: inline-block;
-            color: #0095f6;
-            cursor: pointer;
-            font-size: 15px;
-        }
-        .check-tip {
-            margin: 10px 0;
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-        .error {
-            background: #fff1f2;
-            color: #e02424;
-        }
-        .correct {
-            background: #f1fff6;
-            color: #22a75d;
+            flex-wrap: wrap;
         }
 
-        /* ========== 动态流卡片（Ins 原版帖子） ========== */
-        .feed-list {
-            padding-bottom: 60px;
+        .class-header h1 i {
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 50%;
         }
-        .post-card {
-            border-bottom: 1px solid #dbdbdb;
+
+        .badge-group {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-weight: 500;
         }
-        /* 帖子头部：头像+昵称 */
-        .post-header {
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .badge span {
+            font-weight: 700;
+            margin-right: 6px;
+        }
+
+        /* 发布卡片 */
+        .publish-card {
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+            border: 1px solid #eef2f6;
+        }
+
+        .publish-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
+            gap: 8px;
+            color: #1f5e4f;
         }
-        .user-info {
+
+        /* 姓名输入行 */
+        .name-input-row {
+            margin-bottom: 18px;
+            background: #f8fafc;
+            border-radius: 60px;
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
+            padding: 4px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .name-input-row i {
+            color: #289672;
+            font-size: 1.1rem;
+        }
+        .name-input-row input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 12px 0;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+        }
+        .name-input-row input::placeholder {
+            color: #9aaebf;
+        }
+
+        .textarea-wrapper {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 4px;
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
+        }
+
+        .textarea-wrapper:focus-within {
+            border-color: #289672;
+            box-shadow: 0 0 0 3px rgba(40,150,114,0.2);
+        }
+
+        textarea {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 16px 18px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            outline: none;
+            line-height: 1.5;
+        }
+
+        .char-hint {
+            text-align: right;
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            padding: 6px 12px 0 0;
+        }
+
+        .media-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 18px 0 12px 0;
+            align-items: center;
+        }
+
+        .emoji-picker {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 40px;
+        }
+
+        .emoji-btn {
+            font-size: 1.6rem;
+            cursor: pointer;
+            background: white;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .emoji-btn:hover {
+            transform: scale(1.1);
+            background: #fff6e0;
+        }
+
+        .img-upload {
+            background: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #2c3e66;
+            transition: 0.1s;
+        }
+
+        .img-upload:hover {
+            background: #e6edf4;
+        }
+
+        .img-upload i {
+            font-size: 1.2rem;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .image-preview {
+            margin: 10px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .preview-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 1px solid #ddd;
+        }
+
+        .clear-img-btn {
+            background: #f1f3f5;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .publish-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+
+        .btn-publish {
+            background: #1e6f5c;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .post-avatar {
-            width: 34px;
-            height: 34px;
+
+        .btn-publish:hover {
+            background: #0e5a4a;
+            transform: scale(0.98);
+        }
+
+        /* 朋友圈 Feed */
+        .feed-title {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin: 16px 0 14px 0;
+        }
+
+        .feed-title h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f2b26;
+        }
+
+        .feed-count {
+            background: #e9ecef;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .moments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 朋友圈卡片 */
+        .moment-card {
+            background: white;
+            border-radius: 28px;
+            padding: 18px 20px;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            border: 1px solid #edf2f7;
+        }
+
+        .moment-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .avatar {
+            background: linear-gradient(145deg, #289672, #1e6f5c);
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background: #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-transform: uppercase;
         }
-        .post-username {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .more-icon {
-            font-size: 16px;
-        }
-        /* 帖子图片 */
-        .post-img {
-            width: 100%;
-            display: block;
-        }
-        /* 帖子功能按钮：点赞、评论、转发 */
-        .post-action {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 16px;
-        }
-        .action-left i {
-            font-size: 24px;
-            margin-right: 16px;
-            cursor: pointer;
-        }
-        .action-right i {
-            font-size: 24px;
-            cursor: pointer;
-        }
-        /* 帖子文案 */
-        .post-desc {
-            padding: 0 16px 8px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        .post-time {
-            padding: 0 16px 12px;
-            font-size: 12px;
-            color: #8e8e8e;
-        }
-        /* 评论区 */
-        .comment-wrap {
-            border-top: 1px solid #f0f0f0;
-            padding: 10px 16px;
-        }
-        .comment-item {
-            font-size: 14px;
-            margin-bottom: 6px;
-            line-height: 1.4;
-        }
-        .comment-item b {
-            margin-right: 4px;
-        }
-        .comment-input-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .comment-input {
+
+        .user-info {
             flex: 1;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            padding: 6px 0;
         }
-        .comment-send {
-            color: #0095f6;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .empty-tip {
-            text-align: center;
-            padding: 60px 20px;
-            color: #8e8e8e;
-            font-size: 15px;
-        }
-        /* 底部导航栏（Ins 原版底栏） */
-        .ins-footer {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 420px;
+
+        .user-name {
+            font-weight: 700;
+            font-size: 1rem;
             display: flex;
             align-items: center;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-top: 1px solid #dbdbdb;
-            background: #fff;
+            gap: 6px;
+            flex-wrap: wrap;
         }
-        .footer-icon {
-            font-size: 24px;
+
+        .post-time {
+            font-size: 0.7rem;
+            color: #8f9bb3;
+            margin-top: 4px;
+        }
+
+        .sentence-text {
+            font-size: 1.05rem;
+            line-height: 1.45;
+            margin: 12px 0 16px 0;
+            background: #fefce8;
+            padding: 14px 18px;
+            border-radius: 24px;
+            color: #2d3e50;
+            font-weight: 500;
+            border-left: 6px solid #f6b100;
+            word-break: break-word;
+        }
+
+        .keyword-highlight {
+            background: #ffecb3;
+            color: #c45c00;
+            font-weight: 700;
+            padding: 0 2px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .moment-media {
+            margin: 12px 0 10px 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .moment-img {
+            max-width: 140px;
+            max-height: 140px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 1px solid #e9eef3;
             cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .moment-emoji {
+            font-size: 2rem;
+            background: #f8f9fc;
+            padding: 6px 12px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .like-comment {
+            display: flex;
+            gap: 24px;
+            margin-top: 14px;
+            padding-top: 8px;
+            border-top: 1px solid #ecf3f9;
+            color: #6c7a91;
+            font-size: 0.8rem;
+        }
+
+        .like-comment span {
+            cursor: pointer;
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .like-comment span:hover {
+            color: #1e6f5c;
+        }
+
+        .empty-feed {
+            background: white;
+            border-radius: 32px;
+            padding: 48px 20px;
+            text-align: center;
+            color: #8d9aaf;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.75rem;
+            color: #8f9bb3;
+        }
+        @media (max-width: 550px) {
+            body {
+                padding: 16px 12px;
+            }
+            .moment-card {
+                padding: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 顶部导航栏 -->
-    <header class="ins-header">
-        <div class="ins-logo">Instagram</div>
-        <div class="nav-right">
-            <i class="fa-regular fa-heart ins-nav-icon"></i>
-            <i class="fa-regular fa-paper-plane ins-nav-icon"></i>
-        </div>
-    </header>
-
-    <!-- 发布帖子弹窗（点击底部加号弹出） -->
-    <div class="publish-mask" id="publishMask">
-        <div class="publish-box">
-            <div class="publish-top">
-                <span class="publish-cancel" onclick="closePublish()">取消</span>
-                <span class="publish-title">新建帖子</span>
-                <span class="publish-post" onclick="submitWork()">分享</span>
-            </div>
-            <div class="publish-content">
-                <div class="publish-avatar-name">
-                    <div class="pub-avatar">我</div>
-                    <input type="text" class="pub-name-input" id="userName" placeholder="你的昵称">
-                </div>
-                <textarea class="pub-textarea" id="sentText" placeholder="添加文案（请使用：白、干、瞎、空、虚 造句）"></textarea>
-                <img class="pub-img-preview" id="imgPreview">
-                <input type="file" class="pub-file" id="imgFile" accept="image/*">
-                <label for="imgFile" class="file-label"><i class="fa-solid fa-image"></i> 选择照片</label>
-                <div id="checkResult" class="check-tip"></div>
-            </div>
+<div class="container">
+    <!-- 课堂情景头部 -->
+    <div class="class-header">
+        <h1>
+            <i class="fas fa-mobile-alt"></i> 
+            一起发朋友圈 · 造句大赛
+        </h1>
+        <div style="margin-top: 6px;">📖 周末的意外 → 你会怎么说？</div>
+        <div class="badge-group">
+            <div class="badge"><span>✨ 必用词</span> 白 · 干 · 瞎 · 空 · 虚</div>
+            <div class="badge"><span>🎓 HSK4-6 · 互动课堂</span></div>
+            <div class="badge"><span>👥</span> 填写名字，互相可见</div>
         </div>
     </div>
 
-    <!-- 动态流区域 -->
-    <main class="feed-list" id="feedList">
-        <div class="empty-tip">暂无帖子，点击底部加号发布第一条造句动态 📸</div>
-    </main>
+    <!-- 发布区域：包含姓名、造句、表情包、手机图片上传 -->
+    <div class="publish-card">
+        <div class="publish-title">
+            <i class="fas fa-pen-fancy"></i> 分享你的“意外”感受
+        </div>
+        <!-- 学生填写自己的名字 -->
+        <div class="name-input-row">
+            <i class="fas fa-user-edit"></i>
+            <input type="text" id="studentName" placeholder="你的名字 / 昵称 (例如: 李华、Aisha、Somsak...)" autocomplete="off">
+        </div>
+        <div class="textarea-wrapper">
+            <textarea id="postSentence" rows="2" placeholder="例：我复习了三个月，考试却取消，真是白忙一场，心里空落落的。&#10;记得用上 白 / 干 / 瞎 / 空 / 虚 中的至少一个词！"></textarea>
+        </div>
+        <div class="char-hint" id="charHint">✨ 造句必须包含: 白、干、瞎、空、虚 至少一字</div>
 
-    <!-- 底部导航栏（Ins 原版） -->
-    <footer class="ins-footer">
-        <i class="fa-solid fa-house footer-icon"></i>
-        <i class="fa-solid fa-magnifying-glass footer-icon"></i>
-        <i class="fa-solid fa-plus-square footer-icon" onclick="openPublish()"></i>
-        <i class="fa-regular fa-compass footer-icon"></i>
-        <i class="fa-regular fa-user footer-icon"></i>
+        <!-- 表情包 & 从手机上传图片 -->
+        <div class="media-row">
+            <div class="emoji-picker">
+                <div class="emoji-btn" data-emoji="😭">😭</div>
+                <div class="emoji-btn" data-emoji="🤯">🤯</div>
+                <div class="emoji-btn" data-emoji="😩">😩</div>
+                <div class="emoji-btn" data-emoji="🥴">🥴</div>
+                <div class="emoji-btn" data-emoji="🤦‍♂️">🤦‍♂️</div>
+                <div class="emoji-btn" data-emoji="😅">😅</div>
+                <div class="emoji-btn" data-emoji="📚💔">📚💔</div>
+            </div>
+            <div class="img-upload" id="uploadBtn">
+                <i class="fas fa-image"></i> 从手机相册添加图片
+                <input type="file" id="imageInput" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp">
+            </div>
+        </div>
+        <div id="imagePreviewArea" class="image-preview"></div>
+        <div id="selectedEmojiDisplay" style="font-size:0.9rem; margin: 8px 0 4px 0; color:#556b82;"><i class="fas fa-smile"></i> 已选表情: 无</div>
+        
+        <div class="publish-actions">
+            <button class="btn-publish" id="publishBtn"><i class="fas fa-share-alt"></i> 发 布 朋 友 圈</button>
+        </div>
+    </div>
+
+    <!-- 朋友圈动态流 —— 所有同学互相可见，显示真实填写的名字 -->
+    <div class="feed-title">
+        <h2><i class="fab fa-weixin"></i> 同 学 动 态 圈</h2>
+        <div class="feed-count" id="feedCount">0条动态</div>
+    </div>
+    <div id="momentsContainer" class="moments-list">
+        <div class="empty-feed">
+            <i class="fas fa-comment-dots" style="font-size: 2rem; opacity: 0.5;"></i>
+            <p style="margin-top: 12px;">还没有朋友圈，填写姓名 + 用“白干瞎空虚”造句，让大家看见你的故事！</p>
+        </div>
+    </div>
+    <footer>
+        🧑‍🏫 课堂活动：句子中必须包含「白、干、瞎、空、虚」中的任意字。<br>
+        所有同学发布的朋友圈互相可见，可以点赞互动。支持上传手机图片，记得填写你的名字✨
     </footer>
+</div>
 
 <script>
-// 云端数据库配置
-const firebaseConfig = {
-  apiKey: "AIzaSyB0kF8xQ9Z8X7aQ0Z8X7aQ0Z8X7aQ0Z8X7",
-  authDomain: "chinese-class-practice.firebaseapp.com",
-  projectId: "chinese-class-practice",
-  storageBucket: "chinese-class-practice.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+    // ---------- 全局朋友圈数据 (所有帖子互相可见) ----------
+    let moments = [];
 
-// 打开/关闭发布弹窗
-function openPublish(){
-    document.getElementById('publishMask').style.display = 'flex';
-}
-function closePublish(){
-    document.getElementById('publishMask').style.display = 'none';
-    // 清空内容
-    document.getElementById('userName').value = '';
-    document.getElementById('sentText').value = '';
-    document.getElementById('imgPreview').style.display = 'none';
-    document.getElementById('imgFile').value = '';
-    document.getElementById('checkResult').innerHTML = '';
-}
+    let nextId = 1;
+    // 当前待发布内容暂存
+    let currentEmoji = '无';
+    let currentImageData = null;
 
-// 图片预览
-const imgFile = document.getElementById('imgFile');
-const imgPreview = document.getElementById('imgPreview');
-imgFile.addEventListener('change', function(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev){
-        imgPreview.src = ev.target.result;
-        imgPreview.style.display = 'block';
-    }
-    reader.readAsDataURL(file);
-});
-
-// ========== 自动纠错规则 ==========
-function checkSentence(text){
-    const resDom = document.getElementById('checkResult');
-    const words = ['白','干','瞎','空','虚'];
-    let hasWord = false;
-    let tips = [];
-
-    words.forEach(w => {
-        if(text.includes(w)) hasWord = true;
-    });
-    if(!hasWord){
-        resDom.className = "check-tip error";
-        resDom.innerHTML = "⚠️ 必须使用：白、干、瞎、空、虚 任意一词造句";
-        return false;
+    // 辅助函数: 检查句子是否包含至少一个关键字
+    function containsKeyword(text) {
+        const keywords = ['白', '干', '瞎', '空', '虚'];
+        return keywords.some(kw => text.includes(kw));
     }
 
-    if(text.includes("白") && /白猜测|白乱想/.test(text)){
-        tips.push("❌ 猜测请用「瞎」，「白」表示徒劳无果");
-    }
-    if(text.includes("瞎") && /瞎跑|瞎忙活/.test(text)){
-        tips.push("❌ 白费力气请用「白」，「瞎」表示盲目行事");
-    }
-    if(text.includes("干") && /干成功|干收获/.test(text)){
-        tips.push("❌ 「干」表无奈僵持，不搭配积极结果");
-    }
-    if(text.includes("空") && /空说谎|空骗人/.test(text)){
-        tips.push("❌ 虚假请用「虚」，「空」表有名无实");
-    }
-    if(text.includes("虚") && /虚有外表|虚有本领/.test(text)){
-        tips.push("❌ 有名无实请用「空」，「虚」表虚伪");
+    // 高亮关键字
+    function highlightKeywords(text) {
+        const keywords = ['白', '干', '瞎', '空', '虚'];
+        let result = text;
+        keywords.forEach(kw => {
+            const regex = new RegExp(`(${kw})`, 'g');
+            result = result.replace(regex, `<span class="keyword-highlight">$1</span>`);
+        });
+        return result;
     }
 
-    if(tips.length > 0){
-        resDom.className = "check-tip error";
-        resDom.innerHTML = tips.join("<br>");
-        return false;
-    }else{
-        resDom.className = "check-tip correct";
-        resDom.innerHTML = "✅ 用词正确，可以分享";
-        return true;
-    }
-}
-
-// ========== 发布帖子（提交数据） ==========
-async function submitWork(){
-    const name = document.getElementById('userName').value.trim();
-    const content = document.getElementById('sentText').value.trim();
-    const imgSrc = imgPreview.style.display === 'block' ? imgPreview.src : '';
-
-    if(!name){
-        alert("请填写你的昵称");
-        return;
-    }
-    if(!content){
-        alert("请填写造句文案");
-        return;
+    // 格式化时间
+    function formatTime(timestamp) {
+        const now = new Date();
+        const diff = now - timestamp;
+        const minutes = Math.floor(diff / 60000);
+        if (minutes < 1) return "刚刚";
+        if (minutes < 60) return `${minutes}分钟前`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}小时前`;
+        const days = Math.floor(hours / 24);
+        if (days < 7) return `${days}天前`;
+        const date = new Date(timestamp);
+        return `${date.getMonth()+1}/${date.getDate()}`;
     }
 
-    // 执行纠错
-    const pass = checkSentence(content);
-    if(!pass) return;
+    // 获取头像首字母 (显示姓名第一个字符，中文/英文均可)
+    function getAvatarInitial(name) {
+        if (!name) return "📝";
+        const first = name.trim().charAt(0);
+        if (/[\u4e00-\u9fa5]/.test(first)) return first;
+        return first.toUpperCase();
+    }
 
-    const now = new Date();
-    const timeStr = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`;
+    // 渲染所有朋友圈 (完全互相可见)
+    function renderMoments() {
+        const container = document.getElementById('momentsContainer');
+        const feedCountSpan = document.getElementById('feedCount');
+        feedCountSpan.innerText = `${moments.length}条动态`;
 
-    // 存入云端
-    await db.collection('posts').add({
-        name,
-        content,
-        img: imgSrc,
-        time: timeStr,
-        comments: []
-    });
-
-    alert("发布成功！");
-    closePublish();
-}
-
-// ========== 渲染全部动态帖子（Ins 流布局） ==========
-function renderFeed(){
-    db.collection('posts').orderBy('time','desc').onSnapshot(snapshot => {
-        const feed = document.getElementById('feedList');
-        if(snapshot.empty){
-            feed.innerHTML = `<div class="empty-tip">暂无帖子，点击底部加号发布第一条造句动态 📸</div>`;
+        if (moments.length === 0) {
+            container.innerHTML = `<div class="empty-feed">
+                <i class="fas fa-comment-dots" style="font-size: 2rem; opacity: 0.5;"></i>
+                <p style="margin-top: 12px;">还没有朋友圈，填写姓名 + 用“白干瞎空虚”造句，让大家看见你的故事！</p>
+            </div>`;
             return;
         }
-        let html = '';
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            const docId = doc.id;
-            // 拼接评论
-            let commentHtml = '';
-            if(data.comments && data.comments.length > 0){
-                data.comments.forEach(c => {
-                    commentHtml += `<div class="comment-item"><b>${c.name}</b>${c.content}</div>`;
+
+        // 按时间倒序（最新的在最上面）
+        const sorted = [...moments].sort((a,b) => b.timestamp - a.timestamp);
+        container.innerHTML = sorted.map(moment => {
+            const timeStr = formatTime(moment.timestamp);
+            const highlightedText = highlightKeywords(moment.text);
+            const avatarInitial = getAvatarInitial(moment.userName);
+            
+            let mediaHtml = '';
+            if (moment.imageData) {
+                mediaHtml += `<img src="${moment.imageData}" class="moment-img" alt="分享的图片" onclick="window.open(this.src)" />`;
+            }
+            if (moment.emoji && moment.emoji !== '无') {
+                mediaHtml += `<div class="moment-emoji">${moment.emoji}</div>`;
+            }
+            
+            // 防XSS处理名字
+            const safeName = escapeHtml(moment.userName) || "匿名同学";
+            return `
+                <div class="moment-card" data-moment-id="${moment.id}">
+                    <div class="moment-header">
+                        <div class="avatar">${escapeHtml(avatarInitial)}</div>
+                        <div class="user-info">
+                            <div class="user-name">
+                                ${safeName}
+                            </div>
+                            <div class="post-time"><i class="far fa-clock"></i> ${timeStr}</div>
+                        </div>
+                    </div>
+                    <div class="sentence-text">${highlightedText}</div>
+                    ${mediaHtml ? `<div class="moment-media">${mediaHtml}</div>` : ''}
+                    <div class="like-comment">
+                        <span class="like-btn" data-id="${moment.id}">
+                            <i class="far fa-heart"></i> 点赞 <span class="like-count">${moment.likes}</span>
+                        </span>
+                        <span><i class="far fa-comment"></i> 评论 (${moment.comments?.length || 0})</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // 重新绑定点赞事件
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.removeEventListener('click', handleLike);
+            btn.addEventListener('click', handleLike);
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // 点赞逻辑
+    function handleLike(e) {
+        const btn = e.currentTarget;
+        const momentId = parseInt(btn.getAttribute('data-id'));
+        const moment = moments.find(m => m.id === momentId);
+        if (moment) {
+            moment.likes += 1;
+            renderMoments();
+        }
+        e.stopPropagation();
+    }
+
+    // 发布新朋友圈（学生必须填写名字）
+    function publishMoment() {
+        const nameInput = document.getElementById('studentName');
+        let userName = nameInput.value.trim();
+        if (userName === "") {
+            alert("👋 请先填写你的名字或昵称，让同学们认识你！");
+            return;
+        }
+        // 长度限制，避免过长
+        if (userName.length > 20) userName = userName.slice(0,20);
+        
+        const sentence = document.getElementById('postSentence').value.trim();
+        if (sentence === "") {
+            alert("请写一句包含“白、干、瞎、空、虚”的句子～");
+            return;
+        }
+        if (!containsKeyword(sentence)) {
+            alert("❌ 造句必须包含「白、干、瞎、空、虚」中的至少一个字！\n例如：考试取消了，我白复习了，心里空空的。");
+            return;
+        }
+        
+        const newMoment = {
+            id: nextId++,
+            text: sentence,
+            emoji: currentEmoji,
+            imageData: currentImageData,   // 支持手机图片
+            timestamp: new Date().getTime(),
+            userName: userName,
+            likes: 0,
+            comments: []
+        };
+        moments.push(newMoment);
+        
+        // 重置表单（保留姓名不清空，方便同一学生连续发言；但为了课堂体验，不清空名字，只清空造句和图片表情）
+        document.getElementById('postSentence').value = "";
+        // 重置表情和图片
+        currentEmoji = '无';
+        currentImageData = null;
+        document.getElementById('selectedEmojiDisplay').innerHTML = `<i class="fas fa-smile"></i> 已选表情: 无`;
+        const previewArea = document.getElementById('imagePreviewArea');
+        previewArea.innerHTML = '';
+        document.getElementById('imageInput').value = '';
+        
+        // 重新渲染朋友圈（所有人可见）
+        renderMoments();
+        
+        // 自动滚动到最新动态
+        setTimeout(() => {
+            const container = document.getElementById('momentsContainer');
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+
+    // ---------- 事件绑定 ----------
+    // 表情选择
+    document.querySelectorAll('.emoji-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const emojiVal = btn.getAttribute('data-emoji');
+            currentEmoji = emojiVal;
+            document.getElementById('selectedEmojiDisplay').innerHTML = `<i class="fas fa-smile"></i> 已选表情: ${currentEmoji}`;
+        });
+    });
+
+    // 图片上传（完全支持手机本地图片）
+    const imageInput = document.getElementById('imageInput');
+    const previewArea = document.getElementById('imagePreviewArea');
+    imageInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (!file.type.startsWith('image/')) {
+                alert('请选择图片文件 (jpg, png, gif 等)');
+                imageInput.value = '';
+                return;
+            }
+            if (file.size > 20 * 1024 * 1024) {
+                alert('图片大小不能超过20MB，请选择较小的图片');
+                imageInput.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                currentImageData = ev.target.result;
+                previewArea.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${currentImageData}" class="preview-img" alt="preview" />
+                        <button class="clear-img-btn" id="clearImgBtn">✖️ 移除图片</button>
+                    </div>
+                `;
+                const clearBtn = document.getElementById('clearImgBtn');
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', () => {
+                        currentImageData = null;
+                        previewArea.innerHTML = '';
+                        imageInput.value = '';
+                    });
+                }
+            };
+            reader.readAsDataURL(file);
+        } else {
+            currentImageData = null;
+            previewArea.innerHTML = '';
+        }
+    });
+
+    const publishBtn = document.getElementById('publishBtn');
+    publishBtn.addEventListener('click', publishMoment);
+
+    // 可选：支持回车快捷发布不干扰，但为了防止误触不做强制
+    
+    // ---------- 初始化加载示例帖子（展示符合语法且包含名字的范例，让学生一看就懂互动性）----------
+    function initSampleMoments() {
+        const now = Date.now();
+        const samplePosts = [
+            { text: "为了期末考试熬夜复习三周，结果考试取消了，真是白忙一场，心里空落落的。", emoji: "😭", userName: "林小美", likes: 5, timestamp: now - 3600000 },
+            { text: "别瞎猜考试范围了，老师根本没给任何提示，干着急也没用。", emoji: "🤯", userName: "Ahmed 阿迈德", likes: 4, timestamp: now - 7200000 },
+            { text: "周末在图书馆干等朋友两小时，原来他记错时间，我纯属干等。", emoji: "🤦‍♂️", userName: "Siti 思蒂", likes: 3, timestamp: now - 86400000 },
+            { text: "收到邮件以为提前放假，结果是空欢喜，虚惊一场但还是有点失落。", emoji: "😩", userName: "王语晨", likes: 7, timestamp: now - 43200000 },
+            { text: "整个下午都在瞎忙活整理笔记，结果考试取消，全是白干。", emoji: "📚💔", userName: "Rizki 里兹基", likes: 2, timestamp: now - 1800000 },
+            { text: "别做无谓的空想啦，脚踏实地复习才是真的，虚度光阴最可惜。", emoji: "🥴", userName: "Fatima 法蒂玛", likes: 6, timestamp: now - 10800000 }
+        ];
+        samplePosts.forEach((post) => {
+            if (containsKeyword(post.text)) {
+                moments.push({
+                    id: nextId++,
+                    text: post.text,
+                    emoji: post.emoji,
+                    imageData: null,
+                    timestamp: post.timestamp,
+                    userName: post.userName,
+                    likes: post.likes,
+                    comments: []
                 });
             }
-            // 单条帖子结构（完全复刻Ins）
-            html += `
-            <div class="post-card" data-id="${docId}">
-                <div class="post-header">
-                    <div class="user-info">
-                        <div class="post-avatar">${data.name.charAt(0)}</div>
-                        <div class="post-username">${data.name}</div>
-                    </div>
-                    <i class="fa-solid fa-ellipsis more-icon"></i>
-                </div>
-                ${data.img ? `<img class="post-img" src="${data.img}">` : ''}
-                <div class="post-action">
-                    <div class="action-left">
-                        <i class="fa-regular fa-heart"></i>
-                        <i class="fa-regular fa-comment"></i>
-                        <i class="fa-solid fa-share-nodes"></i>
-                    </div>
-                    <div class="action-right">
-                        <i class="fa-regular fa-bookmark"></i>
-                    </div>
-                </div>
-                <div class="post-desc">
-                    <b>${data.name}</b> ${data.content}
-                </div>
-                <div class="post-time">${data.time}</div>
-                <div class="comment-wrap">
-                    ${commentHtml}
-                    <div class="comment-input-box">
-                        <input type="text" class="comment-input" placeholder="添加评论..." data-docid="${docId}">
-                        <span class="comment-send" onclick="addComment('${docId}')">发布</span>
-                    </div>
-                </div>
-            </div>
-            `;
         });
-        feed.innerHTML = html;
-    });
-}
-
-// ========== 发表评论 ==========
-async function addComment(docId){
-    const input = document.querySelector(`.comment-input[data-docid="${docId}"]`);
-    const txt = input.value.trim();
-    if(!txt){
-        alert("请输入评论内容");
-        return;
+        renderMoments();
     }
-    const docRef = db.collection('posts').doc(docId);
-    await docRef.update({
-        comments: firebase.firestore.FieldValue.arrayUnion({
-            name: "访客",
-            content: txt
-        })
-    });
-    input.value = '';
-}
-
-// 页面初始化
-renderFeed();
+    
+    initSampleMoments();
 </script>
 </body>
 </html>
